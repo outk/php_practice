@@ -7,7 +7,7 @@
     <body>
         <h1><?php echo "お問い合わせフォーム";?></h1>
         <div class="requestform">
-            <form id="form" method="POST">
+            <form action="./mail.php" id="form" method="POST">
                 <label for="name">名前: </label><br>
                 <input type='text' id='name' name='name'><br>
                 <label for="huri">ふりがな: </label><br>
@@ -39,6 +39,7 @@
                 <input type='file' id='image' name='image'><br>
                 <label for="content">お問い合わせ内容: </label><br>
                 <input type='text' id='content' name='content'><br>
+                <input type="submit">
             </form>
         </div>
         <script type="text/javascript" src="./libs/functions.js"></script>
