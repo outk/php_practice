@@ -3,6 +3,7 @@ session_start();
 require("./libs/private/url.php");
 
 $homeurl = get_home_url();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -13,6 +14,7 @@ $homeurl = get_home_url();
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
+        <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
     </head>
     <body>
         <h1><?php echo "お問い合わせフォーム";?></h1>
@@ -32,7 +34,7 @@ $homeurl = get_home_url();
                 <input type='phone' id='phone' name='phone'><br>
                 <p id="phone_validity_err"></p>
                 <label for="postal">郵便番号: </label><br>
-                <input type='text' id='postal' name='postal'><br>
+                <input type='text' id='postal' name='postal' onKeyUp="AjaxZip3.zip2addr(this,'','address','address');"><br>
                 <p id="postal_validity_err"></p>
                 <label for="address">住所: </label><br>
                 <input type='text' id='address' name='address'><br>
@@ -116,11 +118,17 @@ $homeurl = get_home_url();
                 if ($("#phone").val() == "") {
                     $("#phone_validity_err").text("電話番号が入力されていません")
                     validate_check = false
+                } else if (!phone_validate($("#phone").val())) {
+                    $("#phone_validity_err").text("電話番号が正しく入力されていません")
+                    validate_check = false
                 }
 
                 // postal validation
                 if ($("#postal").val() == "") {
                     $("#postal_validity_err").text("郵便番号が入力されていません")
+                    validate_check = false
+                } else if (!postal_validate($("#postal").val())) {
+                    $("#postal_validity_err").text("郵便番号が正しく入力されていません")
                     validate_check = false
                 }
 
@@ -138,6 +146,21 @@ $homeurl = get_home_url();
 
                 return validate_check;
             })
+
+            function phone_validate(phone) {
+                var phone = document.getElementById('phone').value.replace(/[━.*‐.*―.*－.*\-.*ー.*\-]/gi,'');
+                return /^(0[5-9]0[0-9]{8}|0[1-9][1-9][0-9]{7})$/.test(phone);
+            }
+
+            function postal_validate(postal) {
+                if (postal.length > 8 || postal.length < 7) {
+                    console.log(postal);
+                    console.log(postal.length);
+                    return false;
+                } 
+
+                return /^[0-9]{3}(-)?[0-9]{4}$/.test(postal);
+            }
 
         </script>
     </body>
