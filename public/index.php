@@ -143,9 +143,6 @@ $homeurl = get_home_url();
                 }
 
                 // gender validation
-                console.log($("#gender").val());
-                console.log($("#male").val());
-                console.log($("#female").val());
                 if ($("#male").val() == "" && $("#female").val() == "") {
                     $("#gender_validity_err").text("性別が選択されていません")
                     validate_check = false
