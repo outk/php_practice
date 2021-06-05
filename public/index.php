@@ -19,8 +19,7 @@ $homeurl = get_home_url();
     <body>
         <h1><?php echo "お問い合わせフォーム";?></h1>
         <div class="requestform">
-            <!-- <form action="./libs/mail.php" onsubmit="return validateForm()" id="form" method="POST"> -->
-            <form id="form" method="POST" action="./confirm.php">
+            <form id="form" method="POST" action="./confirm.php" enctype="multipart/form-data">
                 <label for="name">名前: </label><br>
                 <input type='text' id='name' name='name'><br>
                 <p id="name_validity_err"></p>
@@ -41,18 +40,20 @@ $homeurl = get_home_url();
                 <p id="address_validity_err"></p>
                 性別: <br>
                 <label>
-                    <input class="gender" type='radio' id='gender' name='gender' value="<?php if ($_SESSION['gender']): echo $_SESSION["gender"]; endif;?>>" onclick="formSwitch()">男性
+                    <input class="gender" type='radio' id='male' name="gender" value="male" onclick="formSwitch()">男性
                 </label>
                 <label>
-                    <input class="gender" type='radio' id='gender' name='gender' value="<?php if ($_SESSION['gender']): echo $_SESSION["gender"]; endif;?>" onclick="formSwitch()">女性<br>
+                    <input class="gender" type='radio' id='female' name="gender" value="female" onclick="formSwitch()">女性<br>
                 </label>
-                <span id="hobby">
+                <span id="hobby_span">
                     <label for="hobby">趣味: </label><br>
-                    <input form="text" name="hobby"><br>
+                    <input type="text" id="hobby" name="hobby"><br>
+                    <p id="hobby_validity_err"></p>
                 </span>
-                <span id="skill">
+                <span id="skill_span">
                     <label for="skill">特技: </label><br>
-                    <input form="text" name="skill"><br>
+                    <input type="text" id="skill" name="skill"><br>
+                    <p id="skill_validity_err"></p>
                 </span>
                 <p id="gender_validity_err"></p>
                 <label for="image">画像: </label><br>
@@ -63,22 +64,23 @@ $homeurl = get_home_url();
             </form>
         </div>
         <script type="text/javascript">
-            var hobbyBox = document.getElementById("hobby");
-            var skillBox = document.getElementById("skill");
+            var hobbyBox = document.getElementById("hobby_span");
+            var skillBox = document.getElementById("skill_span");
             function formSwitch() {
                 gender_check = document.getElementsByClassName("gender");
                 if (gender_check[0].checked) {
                     hobbyBox.style.display = "block";
                     skillBox.style.display = "none";
-                    document.getElementById("gender").value = "male";
+                    document.getElementById("male").value = "male";
                 } else if (gender_check[1].checked) {
                     hobbyBox.style.display = "none";
                     skillBox.style.display = "block";
-                    document.getElementById("gender").value = "female";
+                    document.getElementById("female").value = "female";
                 } else {
                     hobbyBox.style.display = "none";
                     skillBox.style.display = "none";
-                    document.getElementById("gender").value = "";
+                    document.getElementById("male").value = "";
+                    document.getElementById("female").value = "";
                 }
             }
             $(window).on('load', formSwitch())
@@ -95,6 +97,8 @@ $homeurl = get_home_url();
                 $("#postal_validity_err").text("")
                 $("#address_validity_err").text("")
                 $("#gender_validity_err").text("")
+                $("#hobby_validity_err").text("")
+                $("#skill_validity_err").text("")
 
                 // name validation
                 if ($("#name").val() == "") {
@@ -139,9 +143,26 @@ $homeurl = get_home_url();
                 }
 
                 // gender validation
-                if ($("#gender").val() == "") {
+                console.log($("#gender").val());
+                console.log($("#male").val());
+                console.log($("#female").val());
+                if ($("#male").val() == "" && $("#female").val() == "") {
                     $("#gender_validity_err").text("性別が選択されていません")
                     validate_check = false
+                } else if ($("#male").val() == "male") {
+                    if ($("#hobby").val() == "") {
+                        $("#hobby_validity_err").text("趣味が入力されていません")
+                        validate_check = false
+                    } else {
+                        document.getElementById("skill").value = "";
+                    }
+                } else if ($("#female").val() == "female") {
+                    if ($("#skill").val() == "") {
+                        $("#skill_validity_err").text("特技が入力されていません")
+                        validate_check = false
+                    } else {
+                        document.getElementById("hobby").value = "";
+                    }
                 }
 
                 return validate_check;
